@@ -8,7 +8,8 @@ import {
   Navbar,
   Nav,
   Container,
-  Media
+  Media,
+  Badge
 } from "reactstrap";
 
 const AdminNavbar = (props) => {
@@ -23,6 +24,39 @@ const AdminNavbar = (props) => {
             {props.brandText}
           </Link>
           <Nav className="align-items-center d-none d-md-flex" navbar>
+          <UncontrolledDropdown nav>
+            <DropdownToggle nav>
+              <Media className="align-items-center">
+                <i className="ni ni-bell-55" />
+              </Media>
+            </DropdownToggle>
+            <DropdownMenu className="dropdown-menu-arrow notification" right>
+              <DropdownItem className="noti-title" header tag="div">
+                <h6 className="m-0">
+                  <Badge color="success" className="mr-2">
+                        <i className="ni ni-notification-70" /> 
+                    </Badge>
+                    Nomor Register Bukti (BA-5) <b>06/BB/03/2022</b> Telah Diisi Form Pengambilan / Klaim
+                </h6>
+              </DropdownItem>
+              <DropdownItem className="noti-title" header tag="div">
+                <h6 className="m-0">
+                  <Badge color="success" className="mr-2">
+                        <i className="ni ni-notification-70" /> 
+                    </Badge>
+                    Nomor Register Bukti (BA-5) <b>06/BB/03/2022</b> Telah Diisi Form Pengambilan / Klaim
+                </h6>
+              </DropdownItem>
+              <DropdownItem className="noti-title" header tag="div">
+                <h6 className="m-0">
+                  <Badge color="success" className="mr-2">
+                        <i className="ni ni-notification-70" /> 
+                    </Badge>
+                    Nomor Register Bukti (BA-5) <b>06/BB/03/2022</b> Telah Diisi Form Pengambilan / Klaim
+                </h6>
+              </DropdownItem>
+            </DropdownMenu>
+          </UncontrolledDropdown>
             <UncontrolledDropdown nav>
               <DropdownToggle className="pr-0" nav>
                 <Media className="align-items-center">

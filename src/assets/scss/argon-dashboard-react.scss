@@ -84,3 +84,16 @@
 .img-login {
     width: 180px;
 }
+
+.logo-navbar {
+    img {
+        width: 60px !important;
+        height: 60px !important;
+    }
+}
+
+.notification {
+    .dropdown-header {
+        white-space: normal;
+    }
+}

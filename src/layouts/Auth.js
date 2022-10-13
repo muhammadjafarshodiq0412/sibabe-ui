@@ -3,6 +3,7 @@ import { useLocation, Route, Switch, Redirect } from "react-router-dom";
 // reactstrap components
 import { Container, Row } from "reactstrap";
 import Login from "views/examples/Login";
+import Register from "views/examples/Register";
 
 const Auth = (props) => {
   const mainContent = React.useRef(null);
@@ -29,6 +30,7 @@ const Auth = (props) => {
           <Row className="justify-content-center">
             <Switch>
               <Route component={Login} path="/auth/login" />
+              <Route component={Register} path="/auth/register" />
               <Redirect from="*" to="/auth/login" />
             </Switch>
           </Row>

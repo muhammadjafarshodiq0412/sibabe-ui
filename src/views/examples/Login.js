@@ -1,4 +1,5 @@
 // reactstrap components
+import { Link } from "react-router-dom";
 import {
   Button,
   Card,
@@ -28,6 +29,9 @@ const Login = () => {
             />
           </CardHeader>
           <CardBody className="px-lg-5 py-lg-5">
+            <div className="text-center text-muted mb-4">
+              <small>Register</small>
+            </div>
             <Form role="form">
               <FormGroup className="mb-3">
                 <InputGroup className="input-group-alternative">
@@ -57,18 +61,21 @@ const Login = () => {
                   />
                 </InputGroup>
               </FormGroup>
-              <div className="custom-control custom-control-alternative custom-checkbox">
-                <input
-                  className="custom-control-input"
-                  id=" customCheckLogin"
-                  type="checkbox"
-                />
-                <label
-                  className="custom-control-label"
-                  htmlFor=" customCheckLogin"
-                >
-                  <span className="text-muted">Show Password</span>
-                </label>
+              <div className="d-flex justify-content-between">
+                <div className="custom-control custom-control-alternative custom-checkbox">
+                  <input
+                    className="custom-control-input"
+                    id=" customCheckLogin"
+                    type="checkbox"
+                  />
+                  <label
+                    className="custom-control-label"
+                    htmlFor=" customCheckLogin"
+                  >
+                    <span className="text-muted">Show Password</span>
+                  </label>
+                </div>
+                <Link to="/auth/register" className="h-6">Daftar</Link>
               </div>
               <div className="text-center">
                 <Button className="my-4" color="primary" type="button">

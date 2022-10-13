@@ -5,8 +5,7 @@ import {
   Container,
   Row,
   Col,
-  Badge,
-  CardBody
+  Badge
 } from "reactstrap";
 
 import Header from "components/Headers/Header.js";
@@ -19,7 +18,7 @@ const Index = (props) => {
       {/* Page content */}
       <Container className="mt--7" fluid>
         <Row className="mt-5">
-          <Col className="mb-5 mb-xl-0" xl="8">
+          <Col className="mb-5 mb-xl-0" xl="12">
             <Card className="shadow">
               <CardHeader className="border-0">
                 <Row className="align-items-center">
@@ -70,37 +69,6 @@ const Index = (props) => {
                   </tbody>
                 </Table>
               </div>
-            </Card>
-          </Col>
-          <Col xl="4">
-            <Card className="shadow">
-              <CardHeader className="border-0">
-                <Row className="align-items-center">
-                  <div className="col-8">
-                    <h3 className="mb-0">6 Notifikasi Pengambilan Terbaru</h3>
-                  </div>
-                </Row>
-              </CardHeader>
-              <CardBody className="py-1">
-                <h6 className="mb-3">
-                  <Badge color="success" className="mr-2">
-                      <i className="ni ni-notification-70" /> 
-                  </Badge>
-                  Nomor Register Bukti (BA-5) <b>06/BB/03/2022</b> Telah Diisi Form Pengambilan / Klaim
-                </h6>
-                <h6 className="mb-3">
-                  <Badge color="success" className="mr-2">
-                      <i className="ni ni-notification-70" /> 
-                  </Badge>
-                  Nomor Register Bukti (BA-5) <b>06/BB/03/2022</b> Telah Diisi Form Pengambilan / Klaim
-                </h6>
-                <h6 className="mb-3">
-                  <Badge color="success" className="mr-2">
-                      <i className="ni ni-notification-70" /> 
-                  </Badge>
-                  Nomor Register Bukti (BA-5) <b>06/BB/03/2022</b> Telah Diisi Form Pengambilan / Klaim
-                </h6>
-              </CardBody>
             </Card>
           </Col>
         </Row>
