@@ -78,7 +78,7 @@ const Login = () => {
                 <Link to="/auth/register" className="h-6">Daftar</Link>
               </div>
               <div className="text-center">
-                <Button className="my-4" color="primary" type="button">
+                <Button className="my-4" color="primary" type="button" tag={Link} to="/admin/index">
                   Login
                 </Button>
               </div>

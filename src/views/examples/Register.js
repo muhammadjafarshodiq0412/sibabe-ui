@@ -103,7 +103,7 @@ const Register = () => {
                 </Col>
               </Row>
               <div className="text-center">
-                <Button className="mt-4" color="primary" type="button">
+                <Button className="mt-4" color="primary" type="button" tag={Link} to="/auth/login">
                   Buat Akun
                 </Button>
               </div>
