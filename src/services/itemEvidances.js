@@ -44,6 +44,17 @@ export const getItemEvidance = async (data) => {
   })
 }
 
+export const getItemEvidanceMonitoring = async (data) => {
+  const url = `${ROOT_API}/barang-bukti/get-monitoring`
+
+  return callAPI({
+    url,
+    method: 'POST',
+    data,
+    token: true,
+  })
+}
+
 export const getItemEvidanceSummary = async () => {
   const url = `${ROOT_API}/barang-bukti/get-summary`
 

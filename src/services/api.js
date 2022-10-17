@@ -18,12 +18,19 @@ const callAPI = async ({ url, method, data, token, params }) => {
     data,
     headers,
     params,
-    timeout: 30000
+    timeout: 80000
   }).catch((err) => err.response)
+  if (response === undefined) {
+    const res = {
+      error: true,
+      message: 'Request Timeout'
+    }
+    return res
+  }
   if (response.status > 300 || response?.data?.status === 'FAILED') {
     const res = {
       error: true,
-      message: response.data.message
+      message: response?.data?.message
     }
     return res
   }
