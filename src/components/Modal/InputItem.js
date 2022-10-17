@@ -51,7 +51,10 @@ const ModalInputItem = ({ isOpen, toggle, created, payload, listCategory, getDat
     });
     const [file, setFile] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [nameUser, setNameUser] = useState('');
+    const [nameUser, setNameUser] = useState({
+        name: '',
+        phoneNumber: ''
+    });
 
     useEffect(() => {
         if (user) {
@@ -61,7 +64,10 @@ const ModalInputItem = ({ isOpen, toggle, created, payload, listCategory, getDat
         }
         if (!created && payload) {
             let response = payload
-            setNameUser(payload?.user?.name)
+            setNameUser({
+                name: payload?.user?.name,
+                phoneNumber: payload?.user?.name
+            })
             delete response.user
             if (payload.kategoriBb) {
                 const valueCategory = listCategory.filter(val => val.value === payload.kategoriBb.id)[0]
@@ -148,7 +154,7 @@ const ModalInputItem = ({ isOpen, toggle, created, payload, listCategory, getDat
                             const profileCookies = Cookies.get('_P01e')
                             const profileDecode = profileCookies && JSON.parse(atob(profileCookies))
                             window.open(
-                                `https://api.whatsapp.com/send?phone=62${payload?.user?.phoneNumber ? payload?.user?.phoneNumber[0] === '0' ? payload?.user?.phoneNumber?.replace('0', '') : payload?.user?.phoneNumber : ''}&text=Halo%20${nameUser}%20.%20Saya,%20${profileDecode?.name},%20Dengan%20Nomor%20KTP:%20${dataClaim.nikPengambil}.%20Ingin%20Mengambil%20Barang%20Bukti%20Saya.%20Adapun%20Nomor%20Register%20Bukti%20(BA5):%20${payload?.noRegBukti},%20Dengan%20Barang%20Bukti:%20${payload?.barangBukti1}%20dengan%20nomor%20polisi%20${payload?.noPol1}%20.%20Mohon%20Untuk%20Segera%20Ditindak%20Lanjuti%20Permohonan%20Saya.`
+                                `https://api.whatsapp.com/send?phone=62${nameUser?.phoneNumber ? nameUser?.phoneNumber[0] === '0' ? nameUser?.phoneNumber?.replace('0', '') : nameUser?.phoneNumber : ''}&text=Halo%20${nameUser?.name}%20.%20Saya,%20${profileDecode?.name},%20Dengan%20Nomor%20KTP:%20${dataClaim.nikPengambil}.%20Ingin%20Mengambil%20Barang%20Bukti%20Saya.%20Adapun%20Nomor%20Register%20Bukti%20(BA5):%20${payload?.noRegBukti},%20Dengan%20Barang%20Bukti:%20${payload?.barangBukti1}%20dengan%20nomor%20polisi%20${payload?.noPol1}%20.%20Mohon%20Untuk%20Segera%20Ditindak%20Lanjuti%20Permohonan%20Saya.`
                             )
                         }
                     })
