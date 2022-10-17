@@ -1,7 +1,37 @@
 // reactstrap components
+import { useEffect, useState } from "react";
 import { Card, CardBody, CardTitle, Container, Row, Col } from "reactstrap";
+import { getItemEvidanceSummary } from "services/itemEvidances";
+import Swal from "sweetalert2";
 
 const Header = () => {
+
+  const [data, setData] = useState({
+    barangBukti: 0,
+    belumDiambil: 0,
+    sudahIsiForm: 0,
+    sudahDiAmbil: 0,
+  });
+
+  const getSummary = async () => {
+    const response = await getItemEvidanceSummary()
+    if (response.error) {
+      Swal.fire({
+        icon: 'error',
+        title: response.message,
+        showConfirmButton: false,
+        timer: 1500
+      })
+    } else {
+      setData(response.payload)
+    }
+  }
+
+  useEffect(() => {
+    if (window.location.pathname === '/admin/index') {
+      getSummary()
+    }
+  }, [])
 
   return (
     <>
@@ -23,7 +53,7 @@ const Header = () => {
                             Jumlah Barang Bukti
                           </CardTitle>
                           <span className="h2 font-weight-bold mb-0">
-                            59
+                            {data?.barangBukti}
                           </span>
                         </div>
                         <Col className="col-auto">
@@ -46,7 +76,7 @@ const Header = () => {
                           >
                             Belum Diambil
                           </CardTitle>
-                          <span className="h2 font-weight-bold mb-0">2,356</span>
+                          <span className="h2 font-weight-bold mb-0">{data?.belumDiambil}</span>
                         </div>
                         <Col className="col-auto">
                           <div className="icon icon-shape bg-warning text-white rounded-circle shadow">
@@ -68,7 +98,7 @@ const Header = () => {
                           >
                             Sudah Isi Form
                           </CardTitle>
-                          <span className="h2 font-weight-bold mb-0">924</span>
+                          <span className="h2 font-weight-bold mb-0">{data?.sudahIsiForm}</span>
                         </div>
                         <Col className="col-auto">
                           <div className="icon icon-shape bg-yellow text-white rounded-circle shadow">
@@ -90,7 +120,7 @@ const Header = () => {
                           >
                             Sudah Di Ambil
                           </CardTitle>
-                          <span className="h2 font-weight-bold mb-0">49</span>
+                          <span className="h2 font-weight-bold mb-0">{data?.sudahDiAmbil}</span>
                         </div>
                         <Col className="col-auto">
                           <div className="icon icon-shape bg-info text-white rounded-circle shadow">

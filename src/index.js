@@ -10,6 +10,7 @@ import AdminLayout from "layouts/Admin.js";
 import AuthLayout from "layouts/Auth.js";
 import Landing from "layouts/Landing";
 import ItemEvidance from "layouts/ItemEvidance";
+import PrivateRoute from "helpers/privateRoute";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -18,7 +19,11 @@ root.render(
     <Switch>
       <Route exact path="/" render={(props) => <Landing {...props} />} />
       <Route path="/barang-bukti" render={(props) => <ItemEvidance {...props} />} />
-      <Route path="/admin" render={(props) => <AdminLayout {...props} />} />
+      <PrivateRoute
+        path="/admin"
+        name="admin"
+        privateComponent={AdminLayout}
+      />
       <Route path="/auth" render={(props) => <AuthLayout {...props} />} />
     </Switch>
   </BrowserRouter>

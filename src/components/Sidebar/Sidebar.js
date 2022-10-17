@@ -35,6 +35,7 @@ import {
   Col,
   Badge
 } from "reactstrap";
+import Cookies from 'js-cookie'
 
 var ps;
 
@@ -162,7 +163,11 @@ const Sidebar = (props) => {
                 <span>My profile</span>
               </DropdownItem>
               <DropdownItem divider />
-              <DropdownItem to="/auth/login" tag={Link}>
+              <DropdownItem onClick={() => {
+                  Cookies.remove('_T0123')
+                  Cookies.remove('_P01e')
+                  history.push('/auth/login')
+                }}>
                 <i className="ni ni-user-run" />
                 <span>Logout</span>
               </DropdownItem>

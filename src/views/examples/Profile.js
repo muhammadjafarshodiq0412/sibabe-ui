@@ -9,12 +9,111 @@ import {
   Input,
   Container,
   Row,
-  Col
+  Col,
+  Spinner
 } from "reactstrap";
 // core components
 import UserHeader from "components/Headers/UserHeader.js";
+import Cookies from "js-cookie";
+import { useEffect, useState } from "react";
+import Swal from "sweetalert2";
+import { updateUser } from "services/users";
+import { useHistory } from "react-router-dom";
 
 const Profile = () => {
+
+  const [data, setData] = useState({
+    name: "",
+    phoneNumber: "",
+    email: "",
+    username: "nabhan",
+    password: "",
+  });
+  const [loading, setLoading] = useState(false);
+  const [id, setId] = useState('');
+
+  const history = useHistory();
+
+  useEffect(() => {
+    initialData()
+  }, []);
+
+  const initialData = () => {
+    const profileCookies = Cookies.get('_P01e')
+    const profileDecode = JSON.parse(atob(profileCookies))
+    let payload
+    if (profileDecode?.nik) {
+      payload = {
+        name: profileDecode?.name,
+        phoneNumber: profileDecode?.phoneNumber,
+        email: profileDecode?.email,
+        username: profileDecode?.username,
+        nik: profileDecode?.nik,
+        password: "",
+        role: "ADMIN",
+        isActive: true
+      }
+    } else {
+      payload = {
+        name: profileDecode?.name,
+        phoneNumber: profileDecode?.phoneNumber,
+        email: profileDecode?.email,
+        username: profileDecode?.username,
+        password: "",
+        role: "ADMIN",
+        isActive: true
+      }
+    }
+    setData(payload)
+    setId(profileDecode?.id);
+  }
+
+  const submit = async (e) => {
+    e.preventDefault()
+
+    let errorValidasi = false
+
+    Object.keys(data).some(keys => {
+      if (data[keys] === '') {
+        errorValidasi = true
+      }
+      return data[keys] === '' || data[keys] === null
+    })
+
+    if (errorValidasi) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Form harus diisi semua!!!',
+        showConfirmButton: false,
+        timer: 1500
+      })
+    } else {
+      setLoading(true)
+      const response = await updateUser(data, id)
+      if (response.error) {
+        setLoading(false)
+        Swal.fire({
+          icon: 'error',
+          title: response.message,
+          showConfirmButton: false,
+          timer: 1500
+        })
+      } else {
+        Swal.fire({
+          icon: 'success',
+          title: "Update Profil Berhasil",
+          showConfirmButton: false,
+          timer: 1500
+        }).then(() => {
+          setLoading(false)
+          Cookies.remove('_T0123')
+          Cookies.remove('_R8l')
+          history.push('/auth/login')
+        })
+      }
+    }
+  }
+
   return (
     <>
       <UserHeader />
@@ -31,9 +130,9 @@ const Profile = () => {
                 </Row>
               </CardHeader>
               <CardBody>
-                <Form>
+                <Form onSubmit={submit}>
                   <h6 className="heading-small text-muted mb-4">
-                    User information
+                    Informasi Pengguna
                   </h6>
                   <div className="pl-lg-4">
                     <Row>
@@ -50,6 +149,8 @@ const Profile = () => {
                             id="input-name"
                             placeholder="Inputkan Nama Lengkap User"
                             type="text"
+                            value={data?.name}
+                            onChange={(e) => setData({ ...data, name: e.target.value })}
                           />
                         </FormGroup>
                       </Col>
@@ -66,6 +167,8 @@ const Profile = () => {
                             id="input-wa"
                             placeholder="Inputkan Nomor Whatsapp (WA)"
                             type="text"
+                            value={data?.phoneNumber}
+                            onChange={(e) => setData({ ...data, phoneNumber: e.target.value })}
                           />
                         </FormGroup>
                       </Col>
@@ -84,6 +187,8 @@ const Profile = () => {
                             id="input-email"
                             placeholder="Inputkan Email Aktif"
                             type="email"
+                            value={data?.email}
+                            onChange={(e) => setData({ ...data, email: e.target.value })}
                           />
                         </FormGroup>
                       </Col>
@@ -100,6 +205,8 @@ const Profile = () => {
                             id="input-username"
                             placeholder="Inputkan Username"
                             type="text"
+                            value={data?.username}
+                            onChange={(e) => setData({ ...data, username: e.target.value })}
                           />
                         </FormGroup>
                       </Col>
@@ -116,11 +223,17 @@ const Profile = () => {
                             id="input-password"
                             placeholder="Inputkan Password"
                             type="password"
+                            value={data?.password}
+                            onChange={(e) => setData({ ...data, password: e.target.value })}
                           />
                         </FormGroup>
                       </Col>
                       <Col lg="12">
-                        <Button color="primary">Simpan</Button>
+                        {loading ? (
+                          <Spinner size="lg" color="dark" />
+                        ) : (
+                          <Button color="primary" type="submit">Simpan</Button>
+                        )}
                       </Col>
                     </Row>
                   </div>

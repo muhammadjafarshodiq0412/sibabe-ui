@@ -1,5 +1,6 @@
 // reactstrap components
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useHistory } from "react-router-dom";
 import {
   Button,
   Card,
@@ -11,10 +12,72 @@ import {
   InputGroupAddon,
   InputGroupText,
   InputGroup,
-  Col
+  Col,
+  Spinner
 } from "reactstrap";
+import Swal from "sweetalert2";
+import Cookies from 'js-cookie';
+import jwtDecode from "jwt-decode";
+import { setLogin } from "services/users";
 
 const Login = () => {
+
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false)
+
+  const history = useHistory()
+
+  const submit = async (e) => {
+    e.preventDefault()
+    const data = {
+      username,
+      password
+    }
+
+    if (!username || !password) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Email dan Password harus diisi!!!',
+        showConfirmButton: false,
+        timer: 1500
+      })
+    } else {
+      setLoading(true)
+      const response = await setLogin(data)
+      if (response.error) {
+        setLoading(false)
+        Swal.fire({
+          icon: 'error',
+          title: response.message,
+          showConfirmButton: false,
+          timer: 1500
+        })
+      } else {
+        Swal.fire({
+          icon: 'success',
+          title: "Login Berhasil",
+          showConfirmButton: false,
+          timer: 1500
+        }).then(() => {
+          setLoading(false)
+          const token = response.payload.token
+          const tokenBase64 = btoa(token)
+          const profile = jwtDecode(token)
+          const profileBase = btoa(JSON.stringify(profile.user_details))
+          Cookies.set('_P01e', profileBase, { expires: 1 })
+          Cookies.set('_T0123', tokenBase64, { expires: 1 })
+          if (profile.user_details.role === 'ADMIN') {
+            history.push('/admin/index')
+          } else {
+            history.push('/')
+          }
+        })
+      }
+    }
+  }
+
   return (
     <>
       <Col lg="5" md="7">
@@ -30,9 +93,9 @@ const Login = () => {
           </CardHeader>
           <CardBody className="px-lg-5 py-lg-5">
             <div className="text-center text-muted mb-4">
-              <small>Register</small>
+              <small>Login</small>
             </div>
-            <Form role="form">
+            <Form role="form" onSubmit={submit}>
               <FormGroup className="mb-3">
                 <InputGroup className="input-group-alternative">
                   <InputGroupAddon addonType="prepend">
@@ -41,9 +104,10 @@ const Login = () => {
                     </InputGroupText>
                   </InputGroupAddon>
                   <Input
-                    placeholder="Email"
-                    type="email"
-                    autoComplete="new-email"
+                    placeholder="Username"
+                    type="text"
+                    autoComplete="new-username"
+                    onChange={(e) => setUsername(e.target.value)}
                   />
                 </InputGroup>
               </FormGroup>
@@ -56,8 +120,9 @@ const Login = () => {
                   </InputGroupAddon>
                   <Input
                     placeholder="Password"
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     autoComplete="new-password"
+                    onChange={(e) => setPassword(e.target.value)}
                   />
                 </InputGroup>
               </FormGroup>
@@ -67,6 +132,7 @@ const Login = () => {
                     className="custom-control-input"
                     id=" customCheckLogin"
                     type="checkbox"
+                    onClick={() => setShowPassword(!showPassword)}
                   />
                   <label
                     className="custom-control-label"
@@ -78,9 +144,13 @@ const Login = () => {
                 <Link to="/auth/register" className="h-6">Daftar</Link>
               </div>
               <div className="text-center">
-                <Button className="my-4" color="primary" type="button" tag={Link} to="/admin/index">
-                  Login
-                </Button>
+                {loading ? (
+                  <Spinner size="lg" color="dark" />
+                ) : (
+                  <Button className="my-4" color="primary" type="submit">
+                    Login
+                  </Button>
+                )}
               </div>
             </Form>
           </CardBody>

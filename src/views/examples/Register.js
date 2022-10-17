@@ -1,5 +1,6 @@
 // reactstrap components
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useHistory } from "react-router-dom";
 import {
   Button,
   Card,
@@ -12,10 +13,71 @@ import {
   InputGroupText,
   InputGroup,
   Row,
-  Col
+  Col,
+  Spinner
 } from "reactstrap";
+import { setUser } from "services/users";
+import Swal from "sweetalert2";
 
 const Register = () => {
+
+  const [data, setData] = useState({
+    nik: "",
+    name: "",
+    username: "",
+    password: "",
+    role: "USER",
+    isActive: true
+  });
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false)
+
+  const history = useHistory()
+
+  const submit = async (e) => {
+    e.preventDefault()
+
+    let errorValidasi = false
+
+    Object.keys(data).some(keys => {
+      if (data[keys] === '') {
+        errorValidasi = true
+      }
+      return data[keys] === '' || data[keys] === null
+    })
+
+    if (errorValidasi) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Form harus diisi semua!!!',
+        showConfirmButton: false,
+        timer: 1500
+      })
+    } else {
+      setLoading(true)
+      const response = await setUser(data)
+      if (response.error) {
+        setLoading(false)
+        Swal.fire({
+          icon: 'error',
+          title: response.message,
+          showConfirmButton: false,
+          timer: 1500
+        })
+      } else {
+        Swal.fire({
+          icon: 'success',
+          title: "Register Berhasil",
+          showConfirmButton: false,
+          timer: 1500
+        }).then(() => {
+          setLoading(false)
+          history.push('/auth/login')
+        })
+      }
+    }
+  }
+
   return (
     <>
       <Col lg="6" md="8">
@@ -33,7 +95,7 @@ const Register = () => {
             <div className="text-center text-muted mb-4">
               <small>Register</small>
             </div>
-            <Form role="form">
+            <Form role="form" onSubmit={submit}>
               <FormGroup>
                 <InputGroup className="input-group-alternative mb-3">
                   <InputGroupAddon addonType="prepend">
@@ -41,7 +103,7 @@ const Register = () => {
                       <i className="ni ni-badge" />
                     </InputGroupText>
                   </InputGroupAddon>
-                  <Input placeholder="Nomor Identitas (KTP/SIM)" type="text" />
+                  <Input placeholder="Nomor Identitas (KTP/SIM)" type="text" onChange={(e) => setData({ ...data, nik: e.target.value })} />
                 </InputGroup>
               </FormGroup>
               <FormGroup>
@@ -51,7 +113,7 @@ const Register = () => {
                       <i className="ni ni-hat-3" />
                     </InputGroupText>
                   </InputGroupAddon>
-                  <Input placeholder="Nama Lengkap" type="text" />
+                  <Input placeholder="Nama Lengkap" type="text" onChange={(e) => setData({ ...data, name: e.target.value })} />
                 </InputGroup>
               </FormGroup>
               <FormGroup>
@@ -64,7 +126,8 @@ const Register = () => {
                   <Input
                     placeholder="Username"
                     type="text"
-                    autoComplete="new-email"
+                    autoComplete="new-username"
+                    onChange={(e) => setData({ ...data, username: e.target.value })}
                   />
                 </InputGroup>
               </FormGroup>
@@ -77,8 +140,9 @@ const Register = () => {
                   </InputGroupAddon>
                   <Input
                     placeholder="Password"
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     autoComplete="new-password"
+                    onChange={(e) => setData({ ...data, password: e.target.value })}
                   />
                 </InputGroup>
               </FormGroup>
@@ -90,6 +154,7 @@ const Register = () => {
                         className="custom-control-input"
                         id=" customCheckLogin"
                         type="checkbox"
+                        onClick={() => setShowPassword(!showPassword)}
                       />
                       <label
                         className="custom-control-label"
@@ -103,9 +168,13 @@ const Register = () => {
                 </Col>
               </Row>
               <div className="text-center">
-                <Button className="mt-4" color="primary" type="button" tag={Link} to="/auth/login">
-                  Buat Akun
-                </Button>
+                {loading ? (
+                  <Spinner size="lg" color="dark" />
+                ) : (
+                  <Button className="my-4" color="primary" type="submit">
+                    Buat Akun
+                  </Button>
+                )}
               </div>
             </Form>
           </CardBody>

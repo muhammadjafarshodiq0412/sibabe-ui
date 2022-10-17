@@ -1,20 +1,27 @@
+import Cookies from 'js-cookie';
 import React from 'react'
-import { Link } from 'react-router-dom';
-import { Button, Col, Container, Nav, Navbar, NavbarBrand, NavItem, NavLink, Row, UncontrolledCollapse } from 'reactstrap';
+import { Link, useHistory } from 'react-router-dom';
+import { Button, Col, Container, DropdownItem, DropdownMenu, DropdownToggle, Media, Nav, Navbar, NavbarBrand, NavItem, NavLink, Row, UncontrolledCollapse, UncontrolledDropdown } from 'reactstrap';
 
-const HomeNavbar = ({children}) => {
+const HomeNavbar = ({ children }) => {
+
+  const profileCookies = Cookies.get('_P01e')
+  const profileDecode = profileCookies ? JSON.parse(atob(profileCookies)) : null
+
+  const history = useHistory()
+
   return (
     <div>
       <Navbar className="navbar-top navbar-horizontal navbar-light bg-danger" expand="md">
         <Container className="px-4">
           <NavbarBrand to="/" tag={Link}>
             <div className="logo-navbar">
-                <img
+              <img
                 alt="..."
                 src={
-                    require("../../assets/img/brand/logo.png")
+                  require("../../assets/img/brand/logo.png")
                 }
-                />
+              />
             </div>
           </NavbarBrand>
           <button className="navbar-toggler" id="navbar-collapse-main">
@@ -54,11 +61,39 @@ const HomeNavbar = ({children}) => {
                   <span className="nav-link-inner--text">Cari Barang Bukti</span>
                 </NavLink>
               </NavItem>
-              <NavItem>
-                <NavLink to="/auth/login" tag={Link}>
-                  <Button>Login</Button>
-                </NavLink>
-              </NavItem>
+              {profileDecode ? (
+                <UncontrolledDropdown nav className='d-none d-sm-block'>
+                  <DropdownToggle className="pr-0" nav>
+                    <Media className="align-items-center">
+                      <span className="avatar avatar-sm rounded-circle">
+                        <i className="ni ni-single-02 mr-0" />
+                      </span>
+                      <Media className="ml-2 d-none d-lg-block">
+                        <span className="mb-0 text-sm font-weight-bold text-white">
+                          {profileDecode?.name}
+                        </span>
+                      </Media>
+                    </Media>
+                  </DropdownToggle>
+                  <DropdownMenu className="dropdown-menu-arrow" right>
+                    <DropdownItem divider />
+                    <DropdownItem onClick={() => {
+                      Cookies.remove('_T0123')
+                      Cookies.remove('_P01e')
+                      history.push('/')
+                    }}>
+                      <i className="ni ni-user-run" />
+                      <span>Logout</span>
+                    </DropdownItem>
+                  </DropdownMenu>
+                </UncontrolledDropdown>
+              ) : (
+                <NavItem>
+                  <NavLink to="/auth/login" tag={Link}>
+                    <Button>Login</Button>
+                  </NavLink>
+                </NavItem>
+              )}
             </Nav>
           </UncontrolledCollapse>
         </Container>
@@ -74,9 +109,17 @@ const HomeNavbar = ({children}) => {
             <i className="ni ni-planet" />
             <p className="m-0 mt-1">Beranda</p>
           </NavLink>
-          <NavLink to="/" className="d-flex flex-column align-items-center text-white" tag={Link}>
+          <NavLink className="d-flex flex-column align-items-center text-white" onClick={() => {
+            if (profileDecode) {
+              Cookies.remove('_T0123')
+              Cookies.remove('_P01e')
+              history.push('/')
+            } else {
+              history.push('/auth/login')
+            }
+          }}>
             <i className="ni ni-button-power" />
-            <p className="m-0 mt-1">Keluar</p>
+            <p className="m-0 mt-1">{profileDecode ? 'Logout' : 'Login'}</p>
           </NavLink>
         </Navbar>
       </div>

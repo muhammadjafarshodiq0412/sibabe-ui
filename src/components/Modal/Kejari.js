@@ -1,11 +1,94 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React from 'react';
-import { Button, Col, Form, FormGroup, Input, Label, Modal, ModalBody, ModalHeader, Row } from 'reactstrap';
+import React, { useEffect, useState } from 'react';
+import { Button, Col, Form, FormGroup, Input, Label, Modal, ModalBody, ModalHeader, Row, Spinner } from 'reactstrap';
+import { updateUser } from 'services/users';
+import { setUser } from 'services/users';
+import Swal from 'sweetalert2';
 
-const ModalKejari = ({ isOpen, toggle, created }) => {
+const ModalKejari = ({ isOpen, toggle, created, payload, getData }) => {
+
+    const [data, setData] = useState({
+        name: "",
+        phoneNumber: "",
+        email: "",
+        username: "",
+        password: "",
+        role: "ADMIN",
+        isActive: true
+    })
+    const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        if (!created && payload) {
+            const response = {
+                ...payload,
+                password: ''
+            }
+
+            setData(response)
+        } else {
+            setData({
+                name: "",
+                phoneNumber: "",
+                email: "",
+                username: "",
+                password: "",
+                role: "ADMIN",
+                isActive: true
+            })
+        }
+    }, [isOpen]);
 
     const submit = async (e) => {
         e.preventDefault()
+        let errorValidasi = false
+
+        Object.keys(data).some(keys => {
+            if (data[keys] === '') {
+                errorValidasi = true
+            }
+            return data[keys] === '' || data[keys] === null
+        })
+
+        if (errorValidasi) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Form harus diisi semua!!!',
+                showConfirmButton: false,
+                timer: 1500
+            })
+        } else {
+            setLoading(true);
+
+            let response
+
+            if (created) {
+                response = await setUser(data)
+            } else {
+                response = await updateUser(data, payload.id)
+            }
+
+            if (response.error) {
+                setLoading(false)
+                Swal.fire({
+                    icon: 'error',
+                    title: response.message,
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+            } else {
+                Swal.fire({
+                    icon: 'success',
+                    title: created ? "Data Berhasil Diinputkan" : "Data Berhasil Diupdate",
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(() => {
+                    setLoading(false)
+                    toggle()
+                    getData()
+                })
+            }
+        }
     }
 
     return (
@@ -20,8 +103,8 @@ const ModalKejari = ({ isOpen, toggle, created }) => {
                                 <Input
                                     type="text"
                                     placeholder="Inputkan Nama Kejari"
-                                // value={mataKuliah}
-                                // onChange={(e) => setMatakuliah(e.target.value)}
+                                    value={data.name}
+                                    onChange={(e) => setData({ ...data, name: e.target.value })}
                                 />
                             </FormGroup>
                         </Col>
@@ -31,8 +114,8 @@ const ModalKejari = ({ isOpen, toggle, created }) => {
                                 <Input
                                     type="text"
                                     placeholder="Inputkan Nomor Whatsapp"
-                                // value={semester}
-                                // onChange={(e) => setSemester(e.target.value)}
+                                    value={data.phoneNumber}
+                                    onChange={(e) => setData({ ...data, phoneNumber: e.target.value })}
                                 />
                             </FormGroup>
                         </Col>
@@ -42,8 +125,8 @@ const ModalKejari = ({ isOpen, toggle, created }) => {
                                 <Input
                                     type="email"
                                     placeholder="Inputkan Email Aktif"
-                                // value={sks}
-                                // onChange={(e) => setSks(e.target.value)}
+                                    value={data.email}
+                                    onChange={(e) => setData({ ...data, email: e.target.value })}
                                 />
                             </FormGroup>
                         </Col>
@@ -53,8 +136,8 @@ const ModalKejari = ({ isOpen, toggle, created }) => {
                                 <Input
                                     type="text"
                                     placeholder="Inputkan Username"
-                                // value={sks}
-                                // onChange={(e) => setSks(e.target.value)}
+                                    value={data.username}
+                                    onChange={(e) => setData({ ...data, username: e.target.value })}
                                 />
                             </FormGroup>
                         </Col>
@@ -64,13 +147,17 @@ const ModalKejari = ({ isOpen, toggle, created }) => {
                                 <Input
                                     type="password"
                                     placeholder="Inputkan Password"
-                                // value={sks}
-                                // onChange={(e) => setSks(e.target.value)}
+                                    value={data.password}
+                                    onChange={(e) => setData({ ...data, password: e.target.value })}
                                 />
                             </FormGroup>
                         </Col>
                     </Row>
-                    <Button color="primary" type="submit">Simpan Data</Button>
+                    {loading ? (
+                        <Spinner size="lg" color="dark" />
+                    ) : (
+                        <Button color="primary" type="submit">Simpan Data</Button>
+                    )}
                 </Form>
             </ModalBody>
         </Modal>

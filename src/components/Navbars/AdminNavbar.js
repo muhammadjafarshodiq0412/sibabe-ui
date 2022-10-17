@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 // reactstrap components
 import {
   DropdownMenu,
@@ -11,8 +11,15 @@ import {
   Media,
   Badge
 } from "reactstrap";
+import Cookies from 'js-cookie'
 
 const AdminNavbar = (props) => {
+
+  const history = useHistory()
+
+  const profileCookies = Cookies.get('_P01e')
+  const profileDecode = JSON.parse(atob(profileCookies))
+
   return (
     <>
       <Navbar className="navbar-top navbar-dark" expand="md" id="navbar-main">
@@ -24,39 +31,39 @@ const AdminNavbar = (props) => {
             {props.brandText}
           </Link>
           <Nav className="align-items-center d-none d-md-flex" navbar>
-          <UncontrolledDropdown nav>
-            <DropdownToggle nav>
-              <Media className="align-items-center">
-                <i className="ni ni-bell-55" />
-              </Media>
-            </DropdownToggle>
-            <DropdownMenu className="dropdown-menu-arrow notification" right>
-              <DropdownItem className="noti-title" header tag="div">
-                <h6 className="m-0">
-                  <Badge color="success" className="mr-2">
-                        <i className="ni ni-notification-70" /> 
+            <UncontrolledDropdown nav>
+              <DropdownToggle nav>
+                <Media className="align-items-center">
+                  <i className="ni ni-bell-55" />
+                </Media>
+              </DropdownToggle>
+              <DropdownMenu className="dropdown-menu-arrow notification" right>
+                <DropdownItem className="noti-title" header tag="div">
+                  <h6 className="m-0">
+                    <Badge color="success" className="mr-2">
+                      <i className="ni ni-notification-70" />
                     </Badge>
                     Nomor Register Bukti (BA-5) <b>06/BB/03/2022</b> Telah Diisi Form Pengambilan / Klaim
-                </h6>
-              </DropdownItem>
-              <DropdownItem className="noti-title" header tag="div">
-                <h6 className="m-0">
-                  <Badge color="success" className="mr-2">
-                        <i className="ni ni-notification-70" /> 
+                  </h6>
+                </DropdownItem>
+                <DropdownItem className="noti-title" header tag="div">
+                  <h6 className="m-0">
+                    <Badge color="success" className="mr-2">
+                      <i className="ni ni-notification-70" />
                     </Badge>
                     Nomor Register Bukti (BA-5) <b>06/BB/03/2022</b> Telah Diisi Form Pengambilan / Klaim
-                </h6>
-              </DropdownItem>
-              <DropdownItem className="noti-title" header tag="div">
-                <h6 className="m-0">
-                  <Badge color="success" className="mr-2">
-                        <i className="ni ni-notification-70" /> 
+                  </h6>
+                </DropdownItem>
+                <DropdownItem className="noti-title" header tag="div">
+                  <h6 className="m-0">
+                    <Badge color="success" className="mr-2">
+                      <i className="ni ni-notification-70" />
                     </Badge>
                     Nomor Register Bukti (BA-5) <b>06/BB/03/2022</b> Telah Diisi Form Pengambilan / Klaim
-                </h6>
-              </DropdownItem>
-            </DropdownMenu>
-          </UncontrolledDropdown>
+                  </h6>
+                </DropdownItem>
+              </DropdownMenu>
+            </UncontrolledDropdown>
             <UncontrolledDropdown nav>
               <DropdownToggle className="pr-0" nav>
                 <Media className="align-items-center">
@@ -65,7 +72,7 @@ const AdminNavbar = (props) => {
                   </span>
                   <Media className="ml-2 d-none d-lg-block">
                     <span className="mb-0 text-sm font-weight-bold">
-                      Jafar
+                      {profileDecode?.name}
                     </span>
                   </Media>
                 </Media>
@@ -79,7 +86,11 @@ const AdminNavbar = (props) => {
                   <span>My profile</span>
                 </DropdownItem>
                 <DropdownItem divider />
-                <DropdownItem to="/auth/login" tag={Link}>
+                <DropdownItem onClick={() => {
+                  Cookies.remove('_T0123')
+                  Cookies.remove('_P01e')
+                  history.push('/auth/login')
+                }}>
                   <i className="ni ni-user-run" />
                   <span>Logout</span>
                 </DropdownItem>
