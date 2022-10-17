@@ -32,36 +32,31 @@ const AdminNavbar = (props) => {
           </Link>
           <Nav className="align-items-center d-none d-md-flex" navbar>
             <UncontrolledDropdown nav>
-              <DropdownToggle nav>
-                <Media className="align-items-center">
+              <DropdownToggle nav onClick={props.toggle}>
+                <Media className="align-items-center notif">
                   <i className="ni ni-bell-55" />
+                  {props.notif && <div className="notif-shape" />}
                 </Media>
               </DropdownToggle>
               <DropdownMenu className="dropdown-menu-arrow notification" right>
-                <DropdownItem className="noti-title" header tag="div">
-                  <h6 className="m-0">
-                    <Badge color="success" className="mr-2">
-                      <i className="ni ni-notification-70" />
-                    </Badge>
-                    Nomor Register Bukti (BA-5) <b>06/BB/03/2022</b> Telah Diisi Form Pengambilan / Klaim
-                  </h6>
-                </DropdownItem>
-                <DropdownItem className="noti-title" header tag="div">
-                  <h6 className="m-0">
-                    <Badge color="success" className="mr-2">
-                      <i className="ni ni-notification-70" />
-                    </Badge>
-                    Nomor Register Bukti (BA-5) <b>06/BB/03/2022</b> Telah Diisi Form Pengambilan / Klaim
-                  </h6>
-                </DropdownItem>
-                <DropdownItem className="noti-title" header tag="div">
-                  <h6 className="m-0">
-                    <Badge color="success" className="mr-2">
-                      <i className="ni ni-notification-70" />
-                    </Badge>
-                    Nomor Register Bukti (BA-5) <b>06/BB/03/2022</b> Telah Diisi Form Pengambilan / Klaim
-                  </h6>
-                </DropdownItem>
+                {props?.data?.length > 0 ? props.data.map((val, idx) => {
+                  return (
+                    <DropdownItem className="noti-title" header tag="div" key={String(idx)}>
+                      <h6 className="m-0">
+                        <Badge color="success" className="mr-2">
+                          <i className="ni ni-notification-70" />
+                        </Badge>
+                        Nomor Register Bukti (BA-5) <b>{val?.noRegBukti}</b> {val?.statusNoReg === 'OPEN' ? 'Belum Isi Form' : val?.statusNoReg === 'CLAIM' ? 'Sudah Isi Form' : 'Sudah Di Ambil'}
+                      </h6>
+                    </DropdownItem>
+                  )
+                }) : (
+                  <DropdownItem className="noti-title" header tag="div">
+                    <h6 className="m-0">
+                      Notifikasi Kosong
+                    </h6>
+                  </DropdownItem>
+                )}
               </DropdownMenu>
             </UncontrolledDropdown>
             <UncontrolledDropdown nav>

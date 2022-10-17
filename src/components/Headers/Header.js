@@ -9,7 +9,7 @@ const Header = () => {
   const [data, setData] = useState({
     barangBukti: 0,
     belumDiambil: 0,
-    sudahIsiForm: 0,
+    sudahIsiFrom: 0,
     sudahDiAmbil: 0,
   });
 
@@ -98,7 +98,7 @@ const Header = () => {
                           >
                             Sudah Isi Form
                           </CardTitle>
-                          <span className="h2 font-weight-bold mb-0">{data?.sudahIsiForm}</span>
+                          <span className="h2 font-weight-bold mb-0">{data?.sudahIsiFrom}</span>
                         </div>
                         <Col className="col-auto">
                           <div className="icon icon-shape bg-yellow text-white rounded-circle shadow">

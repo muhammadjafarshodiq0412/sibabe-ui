@@ -85,9 +85,9 @@ const Register = () => {
           <CardHeader className="bg-transparent pb-5 text-center">
             <img
               alt="..."
-              className="img-login"
+              className="img-login rounded"
               src={
-                require("../../assets/img/brand/logo.png")
+                require("../../assets/img/brand/logo.jpeg")
               }
             />
           </CardHeader>

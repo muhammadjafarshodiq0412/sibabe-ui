@@ -18,7 +18,7 @@ const callAPI = async ({ url, method, data, token, params }) => {
     data,
     headers,
     params,
-    timeout: 80000
+    timeout: 100000
   }).catch((err) => err.response)
   if (response === undefined) {
     const res = {

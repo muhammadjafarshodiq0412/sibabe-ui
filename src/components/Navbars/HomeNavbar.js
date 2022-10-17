@@ -19,8 +19,9 @@ const HomeNavbar = ({ children }) => {
               <img
                 alt="..."
                 src={
-                  require("../../assets/img/brand/logo.png")
+                  require("../../assets/img/brand/logo.jpeg")
                 }
+                className="rounded"
               />
             </div>
           </NavbarBrand>
@@ -35,8 +36,9 @@ const HomeNavbar = ({ children }) => {
                     <img
                       alt="..."
                       src={
-                        require("../../assets/img/brand/logo.png")
+                        require("../../assets/img/brand/logo.jpeg")
                       }
+                      className="rounded"
                     />
                   </Link>
                 </Col>

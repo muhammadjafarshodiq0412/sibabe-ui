@@ -1,10 +1,12 @@
-import React from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useEffect, useState } from "react";
 import { useLocation, Route, Switch, Redirect } from "react-router-dom";
 // core components
 import AdminNavbar from "components/Navbars/AdminNavbar.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
 
 import routes from "routes.js";
+import { getItemEvidance } from "services/itemEvidances";
 
 const Admin = (props) => {
   const mainContent = React.useRef(null);
@@ -44,6 +46,52 @@ const Admin = (props) => {
     return "Brand";
   };
 
+  const [data, setData] = useState([]);
+  const [notif, setNotif] = useState(false);
+
+  const getItemEvidanceList = async () => {
+    const response = await getItemEvidance({
+      currentPage: 0,
+      limit: 5,
+      filter: "",
+      category: "",
+      status: ""
+    })
+    if (!response.error) {
+      const objectsAreSame = (x, y) => {
+        var value = true;
+        for (var propertyName in x) {
+          if (JSON.stringify(x[propertyName]) !== JSON.stringify(y[propertyName])) {
+            value = false;
+            break;
+          }
+        }
+        return value;
+      }
+      let _notif
+      await Promise.all([1].map((val) => {
+        _notif = objectsAreSame(response.payload.content, data)
+        return true
+      }))
+      if (!_notif) {
+        setNotif(true);
+      }
+      setData(response.payload.content)
+    }
+  }
+
+  useEffect(() => {
+    setInterval(() => {
+      getItemEvidanceList()
+    }, 500000)
+  }, []);
+
+  useEffect(() => {
+    getItemEvidanceList()
+  }, [])
+
+  const toggle = () => setNotif(false);
+
   return (
     <>
       <Sidebar
@@ -51,14 +99,20 @@ const Admin = (props) => {
         routes={routes}
         logo={{
           innerLink: "/admin/index",
-          imgSrc: require("../assets/img/brand/logo.png"),
+          imgSrc: require("../assets/img/brand/logo.jpeg"),
           imgAlt: "..."
         }}
+        data={data}
+        notif={notif}
+        toggle={toggle}
       />
       <div className="main-content" ref={mainContent}>
         <AdminNavbar
           {...props}
           brandText={getBrandText(props.location.pathname)}
+          data={data}
+          notif={notif}
+          toggle={toggle}
         />
         <Switch>
           {getRoutes(routes)}

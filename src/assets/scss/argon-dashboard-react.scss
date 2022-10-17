@@ -88,3 +88,17 @@
 .img-preview {
     width: 240px;
 }
+
+.notif {
+    position: relative;
+
+    .notif-shape {
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        background-color: #f5365c;
+        border-radius: 50%;
+        right: 0;
+        top: 0;
+    }
+}

@@ -106,7 +106,7 @@ const Sidebar = (props) => {
           <NavbarBrand className="pt-0" {...navbarBrandProps}>
             <img
               alt={logo.imgAlt}
-              className="navbar-brand-img"
+              className="navbar-brand-img rounded"
               src={logo.imgSrc}
             />
           </NavbarBrand>
@@ -115,35 +115,30 @@ const Sidebar = (props) => {
         <Nav className="align-items-center d-md-none">
           <UncontrolledDropdown nav>
             <DropdownToggle nav>
-              <Media className="align-items-center">
+              <Media className="align-items-center notif" onClick={props.toggle}>
                 <i className="ni ni-bell-55" />
+                {props.notif && <div className="notif-shape" />}
               </Media>
             </DropdownToggle>
             <DropdownMenu className="dropdown-menu-arrow notification" right>
-              <DropdownItem className="noti-title" header tag="div">
-                <h6 className="m-0">
-                  <Badge color="success" className="mr-2">
-                        <i className="ni ni-notification-70" /> 
-                    </Badge>
-                    Nomor Register Bukti (BA-5) <b>06/BB/03/2022</b> Telah Diisi Form Pengambilan / Klaim
-                </h6>
-              </DropdownItem>
-              <DropdownItem className="noti-title" header tag="div">
-                <h6 className="m-0">
-                  <Badge color="success" className="mr-2">
-                        <i className="ni ni-notification-70" /> 
-                    </Badge>
-                    Nomor Register Bukti (BA-5) <b>06/BB/03/2022</b> Telah Diisi Form Pengambilan / Klaim
-                </h6>
-              </DropdownItem>
-              <DropdownItem className="noti-title" header tag="div">
-                <h6 className="m-0">
-                  <Badge color="success" className="mr-2">
-                        <i className="ni ni-notification-70" /> 
-                    </Badge>
-                    Nomor Register Bukti (BA-5) <b>06/BB/03/2022</b> Telah Diisi Form Pengambilan / Klaim
-                </h6>
-              </DropdownItem>
+              {props?.data?.length > 0 ? props.data.map((val, idx) => {
+                return (
+                  <DropdownItem className="noti-title" header tag="div" key={String(idx)}>
+                    <h6 className="m-0">
+                      <Badge color="success" className="mr-2">
+                        <i className="ni ni-notification-70" />
+                      </Badge>
+                      Nomor Register Bukti (BA-5) <b>{val?.noRegBukti}</b> {val?.statusNoReg === 'OPEN' ? 'Belum Isi Form' : val?.statusNoReg === 'CLAIM' ? 'Sudah Isi Form' : 'Sudah Di Ambil'}
+                    </h6>
+                  </DropdownItem>
+                )
+              }) : (
+                <DropdownItem className="noti-title" header tag="div">
+                  <h6 className="m-0">
+                    Notifikasi Kosong
+                  </h6>
+                </DropdownItem>
+              )}
             </DropdownMenu>
           </UncontrolledDropdown>
           <UncontrolledDropdown nav>
@@ -164,10 +159,10 @@ const Sidebar = (props) => {
               </DropdownItem>
               <DropdownItem divider />
               <DropdownItem onClick={() => {
-                  Cookies.remove('_T0123')
-                  Cookies.remove('_P01e')
-                  history.push('/auth/login')
-                }}>
+                Cookies.remove('_T0123')
+                Cookies.remove('_P01e')
+                history.push('/auth/login')
+              }}>
                 <i className="ni ni-user-run" />
                 <span>Logout</span>
               </DropdownItem>
