@@ -6,7 +6,7 @@ import AdminNavbar from "components/Navbars/AdminNavbar.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
 
 import routes from "routes.js";
-import { getItemEvidance } from "services/itemEvidances";
+import { getItemEvidanceNotification } from "services/itemEvidances";
 
 const Admin = (props) => {
   const mainContent = React.useRef(null);
@@ -50,13 +50,7 @@ const Admin = (props) => {
   const [notif, setNotif] = useState(false);
 
   const getItemEvidanceList = async () => {
-    const response = await getItemEvidance({
-      currentPage: 0,
-      limit: 5,
-      filter: "",
-      category: "",
-      status: ""
-    })
+    const response = await getItemEvidanceNotification()
     if (!response.error) {
       const objectsAreSame = (x, y) => {
         var value = true;
@@ -70,13 +64,13 @@ const Admin = (props) => {
       }
       let _notif
       await Promise.all([1].map((val) => {
-        _notif = objectsAreSame(response.payload.content, data)
+        _notif = objectsAreSame(response.payload, data)
         return true
       }))
       if (!_notif) {
         setNotif(true);
       }
-      setData(response.payload.content)
+      setData(response.payload)
     }
   }
 

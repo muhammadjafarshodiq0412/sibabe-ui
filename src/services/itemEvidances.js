@@ -64,3 +64,13 @@ export const getItemEvidanceSummary = async () => {
     token: true
   })
 }
+
+export const getItemEvidanceNotification = async () => {
+  const url = `${ROOT_API}/barang-bukti/get-notification`
+
+  return callAPI({
+    url,
+    method: 'GET',
+    token: true
+  })
+}

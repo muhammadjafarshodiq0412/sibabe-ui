@@ -12,6 +12,7 @@ import {
   Badge
 } from "reactstrap";
 import Cookies from 'js-cookie'
+import moment from "moment";
 
 const AdminNavbar = (props) => {
 
@@ -46,7 +47,7 @@ const AdminNavbar = (props) => {
                         <Badge color="success" className="mr-2">
                           <i className="ni ni-notification-70" />
                         </Badge>
-                        Nomor Register Bukti (BA-5) <b>{val?.noRegBukti}</b> {val?.statusNoReg === 'OPEN' ? 'Belum Isi Form' : val?.statusNoReg === 'CLAIM' ? 'Sudah Isi Form' : 'Sudah Di Ambil'}
+                        Nomor Register Bukti (BA-5) <b>{val?.noRegBukti}</b> {val?.statusNoReg === 'OPEN' ? 'Belum Isi Form' : val?.statusNoReg === 'CLAIM' ? 'Sudah Isi Form' : 'Sudah Di Ambil'} oleh {val?.claimer} pada {moment(val?.createdDate).format('DD-MMM-YYYY hh:mm:ss')}
                       </h6>
                     </DropdownItem>
                   )
