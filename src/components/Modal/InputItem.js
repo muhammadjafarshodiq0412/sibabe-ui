@@ -66,7 +66,7 @@ const ModalInputItem = ({ isOpen, toggle, created, payload, listCategory, getDat
             let response = payload
             setNameUser({
                 name: payload?.user?.name,
-                phoneNumber: payload?.user?.name
+                phoneNumber: payload?.user?.phoneNumber
             })
             delete response.user
             if (payload.kategoriBb) {
@@ -130,7 +130,7 @@ const ModalInputItem = ({ isOpen, toggle, created, payload, listCategory, getDat
                 })
             } else {
                 setLoading(true)
-                const response = await setSaveTransaction(dataClaim)
+                const response = await setSaveTransaction({ ...dataClaim, pengambilanBb: dataClaim?.pengambilanBb?.value })
 
                 if (response.error) {
                     setLoading(false)
@@ -158,7 +158,7 @@ const ModalInputItem = ({ isOpen, toggle, created, payload, listCategory, getDat
                             )
                         }
                     })
-                }   
+                }
             }
         } else {
             let errorValidasi = false
@@ -624,13 +624,25 @@ const ModalInputItem = ({ isOpen, toggle, created, payload, listCategory, getDat
                                         />
                                     </FormGroup>
                                 </Col>
+                                <FormGroup>
+                                </FormGroup>
                                 <Col md={6}>
                                     <FormGroup>
                                         <Label>Pengambilan Barang Bukti</Label>
-                                        <Input
-                                            type="text"
-                                            placeholder="Inputkan Pengambilan Barang Bukti"
-                                            onChange={(e) => setDataClaim({ ...dataClaim, pengambilanBb: e.target.value })}
+                                        <Select
+                                            name="pengambilan-barang-bukti"
+                                            placeholder="Pilih Pengambilan Barang Bukti"
+                                            options={[
+                                                {
+                                                    label: 'Diambil',
+                                                    value: 'Diambil'
+                                                },
+                                                {
+                                                    label: 'Diantar',
+                                                    value: 'Diantar'
+                                                }
+                                            ]}
+                                            onChange={(e) => setDataClaim({ ...dataClaim, pengambilanBb: e })}
                                         />
                                     </FormGroup>
                                 </Col>

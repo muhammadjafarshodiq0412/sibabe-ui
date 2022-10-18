@@ -26,6 +26,7 @@ const Register = () => {
     name: "",
     username: "",
     password: "",
+    email: "",
     role: "USER",
     isActive: true
   });
@@ -80,7 +81,7 @@ const Register = () => {
 
   return (
     <>
-      <Col lg="6" md="8">
+      <Col lg="5" md="7">
         <Card className="bg-secondary shadow border-0">
           <CardHeader className="bg-transparent pb-5 text-center">
             <img
@@ -114,6 +115,21 @@ const Register = () => {
                     </InputGroupText>
                   </InputGroupAddon>
                   <Input placeholder="Nama Lengkap" type="text" onChange={(e) => setData({ ...data, name: e.target.value })} />
+                </InputGroup>
+              </FormGroup>
+              <FormGroup>
+                <InputGroup className="input-group-alternative">
+                  <InputGroupAddon addonType="prepend">
+                    <InputGroupText>
+                      <i className="ni ni-email-83" />
+                    </InputGroupText>
+                  </InputGroupAddon>
+                  <Input
+                    placeholder="Email"
+                    type="text"
+                    autoComplete="new-email"
+                    onChange={(e) => setData({ ...data, email: e.target.value })}
+                  />
                 </InputGroup>
               </FormGroup>
               <FormGroup>
