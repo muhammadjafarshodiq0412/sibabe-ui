@@ -159,8 +159,8 @@ const ItemEvidance = () => {
               {pageInfo.totalData > 0 && (
                 <div className="d-flex justify-content-end mt-4">
                   <Pagination
-                    activePage={page}
-                    itemsCountPerPage={15}
+                    activePage={page + 1}
+                    itemsCountPerPage={10}
                     totalItemsCount={pageInfo.totalData}
                     pageRangeDisplayed={3}
                     onChange={handleChangePage.bind(this)}

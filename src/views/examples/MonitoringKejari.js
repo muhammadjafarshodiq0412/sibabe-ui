@@ -143,7 +143,7 @@ const MonitoringKejari = () => {
                   <div className="d-flex justify-content-end mt-4">
                     <Pagination
                       activePage={page + 1}
-                      itemsCountPerPage={15}
+                      itemsCountPerPage={10}
                       totalItemsCount={pageInfo.totalData}
                       pageRangeDisplayed={3}
                       onChange={handleChangePage.bind(this)}

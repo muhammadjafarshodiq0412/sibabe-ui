@@ -20,10 +20,13 @@ import Swal from "sweetalert2";
 import Pagination from "react-js-pagination";
 import ModalConfirmation from "components/Modal/Confirmation";
 import moment from "moment";
+import ModalPreview from "components/Modal/Preview";
 
 const InfoPickup = () => {
 
   const [isOpen, setIsOpen] = useState(false);
+  const [isOpenPreview, setIsOpenPreview] = useState(false);
+  const [dataPreview, setDataPreview] = useState('');
   const [page, setPage] = useState(0);
   const [search, setSearch] = useState('');
   const [data, setData] = useState([]);
@@ -36,6 +39,7 @@ const InfoPickup = () => {
   const [id, setId] = useState('');
 
   const toggle = () => setIsOpen(!isOpen);
+  const togglePreview = () => setIsOpenPreview(!isOpenPreview);
 
   const getIfoPickupList = async () => {
     setLoading(true);
@@ -77,6 +81,7 @@ const InfoPickup = () => {
       <Header />
       {/* Page content */}
       <ModalConfirmation isOpen={isOpen} toggle={toggle} id={id} getData={getIfoPickupList} />
+      <ModalPreview isOpen={isOpenPreview} toggle={togglePreview} data={dataPreview} />
       <Container className="mt--7" fluid>
         {/* Table */}
         <Row>
@@ -174,13 +179,23 @@ const InfoPickup = () => {
                               <b>Pengambilan Barang Bukti </b>
                               {val?.pengambilanBb}
                             </div>
-                            <div>
-                              <b>Foto KTP Pengambil </b>
-                              [Lihat Gambar / Dokumen]
+                            <div className="text-primary" style={{ cursor: 'pointer' }} onClick={() => {
+                              if (val?.picKtpPengambil) {
+                                setDataPreview(val?.picKtpPengambil)
+                                togglePreview()
+                              }
+                            }}>
+                              <b style={{ color: '#525f7f' }}>Foto KTP Pengambil </b>
+                              {val?.picKtpPengambil ? '[Lihat Gambar]' : ''}
                             </div>
-                            <div>
-                              <b>Foto Bukti Kepemilikan </b>
-                              [Lihat Gambar / Dokumen]
+                            <div className="text-primary" style={{ cursor: 'pointer' }} onClick={() => {
+                              if (val?.picKepemilikan) {
+                                setDataPreview(val?.picKepemilikan)
+                                togglePreview()
+                              }
+                            }}>
+                              <b style={{ color: '#525f7f' }}>Foto Bukti Kepemilikan </b>
+                              {val?.picKepemilikan ? '[Lihat Gambar]' : ''}
                             </div>
                           </td>
                           <td>
@@ -213,7 +228,7 @@ const InfoPickup = () => {
                   <div className="d-flex justify-content-end mt-4">
                     <Pagination
                       activePage={page + 1}
-                      itemsCountPerPage={15}
+                      itemsCountPerPage={10}
                       totalItemsCount={pageInfo.totalData}
                       pageRangeDisplayed={3}
                       onChange={handleChangePage.bind(this)}
