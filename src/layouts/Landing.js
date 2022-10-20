@@ -17,7 +17,7 @@ const Landing = () => {
             </Col>
             <Col md={6}>
               <h1>SiBabe Lamandau</h1>
-              <p>SiBabe Lamandau merupakan sistem informasi untuk mencari barang bukti elektronik pada Lamandau</p>
+              <p>SiBabe Lamandau merupakan sistem informasi untuk mencari barang bukti elektronik pada Kejaksaan Negeri Lamandau</p>
             </Col>
           </Row>
         </Container>
