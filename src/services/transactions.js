@@ -14,7 +14,7 @@ export const getTransaction = async (data) => {
 }
 
 export const setSaveTransaction = async (data) => {
-  const url = `${ROOT_API}/transaction/save`
+  const url = `${ROOT_API}/transaction/save-multipart`
 
   return callAPI({
     url,

@@ -1,5 +1,4 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { toBase64 } from 'helpers/convertBase64';
 import Cookies from 'js-cookie';
 import React, { useEffect, useState } from 'react';
 import Select from 'react-select';
@@ -56,7 +55,10 @@ const ModalInputItem = ({ isOpen, toggle, created, payload, listCategory, getDat
         phoneNumber: ''
     });
 
+    const ROOT_API = process.env.REACT_APP_API_URL
+
     useEffect(() => {
+        setFile([]);
         if (user) {
             const profileCookies = Cookies.get('_P01e')
             const profileDecode = profileCookies && JSON.parse(atob(profileCookies))
@@ -130,7 +132,27 @@ const ModalInputItem = ({ isOpen, toggle, created, payload, listCategory, getDat
                 })
             } else {
                 setLoading(true)
-                const response = await setSaveTransaction({ ...dataClaim, pengambilanBb: dataClaim?.pengambilanBb?.value })
+                const formData = new FormData();
+                const payloadData = {
+                    admin: dataClaim.admin,
+                    claimer: dataClaim.claimer,
+                    barangBukti: dataClaim.barangBukti,
+                    namaPengambil: dataClaim.namaPengambil,
+                    nikPengambil: dataClaim.nikPengambil,
+                    pengambilanBb: dataClaim?.pengambilanBb?.value
+                }
+
+                formData.append('data', JSON.stringify(payloadData))
+
+                if (dataClaim.picKepemilikan) {
+                    formData.append('kepemilikan', dataClaim.picKepemilikan)
+                }
+
+                if (dataClaim.picKtpPengambil) {
+                    formData.append('ktp', dataClaim.picKtpPengambil)
+                }
+                
+                const response = await setSaveTransaction(formData)
 
                 if (response.error) {
                     setLoading(false)
@@ -184,53 +206,78 @@ const ModalInputItem = ({ isOpen, toggle, created, payload, listCategory, getDat
                 const profileCookies = Cookies.get('_P01e')
                 const profileDecode = JSON.parse(atob(profileCookies))
                 let json
+                const formData = new FormData();
                 if (file.length > 0) {
 
-                    let fileData = {
-                        pic1: "",
-                        pic2: "",
-                        pic3: "",
-                        pic4: "",
-                        pic5: "",
-                        pic6: "",
-                        pic7: "",
-                        pic8: "",
-                        pic9: "",
-                        pic10: "",
+                    // let fileData = {
+                    //     pic1: "",
+                    //     pic2: "",
+                    //     pic3: "",
+                    //     pic4: "",
+                    //     pic5: "",
+                    //     pic6: "",
+                    //     pic7: "",
+                    //     pic8: "",
+                    //     pic9: "",
+                    //     pic10: "",
+                    // }
+
+                    // await Promise.all(Object.keys(data).map((keys) => {
+                    //     if (keys.includes('pic')) {
+                    //         fileData = { ...fileData, [keys]: data[keys] }
+                    //     }
+                    //     return true
+                    // }))
+
+                    let payloadData = data
+
+                    delete payloadData.filePath
+                    delete payloadData.fileSize
+                    delete payloadData.fileName
+                    delete payloadData.fileExtension
+                    delete payloadData.id
+                    delete payloadData.createdDate
+                    delete payloadData.statusNoReg
+
+                    json = {
+                        ...payloadData,
+                        kategoriBb: data?.kategoriBb ? data?.kategoriBb?.value : '',
+                        user: profileDecode?.id
                     }
 
-                    await Promise.all(Object.keys(data).map((keys) => {
-                        if (keys.includes('pic')) {
-                            fileData = { ...fileData, [keys]: data[keys] }
-                        }
+                    
+                    formData.append('barangBukti', JSON.stringify(json))
+                    
+                    await Promise.all(file.map((value, index) => {
+                        formData.append('files', value)
                         return true
                     }))
-
-                    await Promise.all(file.map(async (value, index) => {
-                        const base64 = await toBase64(value)
-                        fileData = { ...fileData, [`pic${index + 1}`]: base64 }
-                    }))
-
-                    json = {
-                        ...data,
-                        kategoriBb: data?.kategoriBb ? data?.kategoriBb?.value : '',
-                        ...fileData,
-                        user: profileDecode?.id
-                    }
                 } else {
+                    let payloadData = data
+
+                    delete payloadData.filePath
+                    delete payloadData.fileSize
+                    delete payloadData.fileName
+                    delete payloadData.fileExtension
+                    delete payloadData.id
+                    delete payloadData.createdDate
+                    delete payloadData.statusNoReg
+
                     json = {
-                        ...data,
+                        ...payloadData,
                         kategoriBb: data?.kategoriBb ? data?.kategoriBb?.value : '',
                         user: profileDecode?.id
                     }
+
+                    formData.append('barangBukti', JSON.stringify(json))
                 }
 
                 let response
 
                 if (created) {
-                    response = await setItemEvidance(json)
+                    response = await setItemEvidance(formData)
                 } else {
-                    response = await updateItemEvidance(json, payload.id)
+                    response = await updateItemEvidance(formData, payload.id)
                 }
 
                 if (response.error) {
@@ -586,17 +633,14 @@ const ModalInputItem = ({ isOpen, toggle, created, payload, listCategory, getDat
                                 )}
                                 {detail ? (
                                     <Row>
-                                        {Object.keys(data).map((key, idx) => {
-                                            if (key.includes('pic') && data[key]) {
-                                                return (
-                                                    <Col md={4} key={String(idx)}>
-                                                        <div className='img-preview'>
-                                                            <img src={data[key]} alt={key} className='img-fluid' />
-                                                        </div>
-                                                    </Col>
-                                                )
-                                            }
-                                            return null
+                                        {[...Array(data?.fileSize)].map((value, idx) => {
+                                            return (
+                                                <Col md={4} key={String(idx)}>
+                                                    <div className='img-preview'>
+                                                        <img src={`${ROOT_API}${data?.filePath}${data?.fileName}${idx + 1}_${data?.id}${data?.fileExtension}`} alt={`img-${idx}`} className='img-fluid' />
+                                                    </div>
+                                                </Col>
+                                            )
                                         })}
                                     </Row>
                                 ) : null}
@@ -651,9 +695,8 @@ const ModalInputItem = ({ isOpen, toggle, created, payload, listCategory, getDat
                                         <Label>Foto KTP (Tipe Gambar: Jpg/Jpeg/Png)</Label>
                                         <Input
                                             type="file"
-                                            onChange={async (e) => {
-                                                const base64 = await toBase64(e.target.files[0])
-                                                setDataClaim({ ...dataClaim, picKtpPengambil: base64 })
+                                            onChange={(e) => {
+                                                setDataClaim({ ...dataClaim, picKtpPengambil: e.target.files[0] })
                                             }}
                                         />
                                     </FormGroup>
@@ -663,9 +706,8 @@ const ModalInputItem = ({ isOpen, toggle, created, payload, listCategory, getDat
                                         <Label>Foto Kepemilikan (Tipe Gambar: Jpg/Jpeg/Png)</Label>
                                         <Input
                                             type="file"
-                                            onChange={async (e) => {
-                                                const base64 = await toBase64(e.target.files[0])
-                                                setDataClaim({ ...dataClaim, picKepemilikan: base64 })
+                                            onChange={(e) => {
+                                                setDataClaim({ ...dataClaim, picKepemilikan: e.target.files[0] })
                                             }}
                                         />
                                     </FormGroup>

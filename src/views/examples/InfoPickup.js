@@ -76,6 +76,8 @@ const InfoPickup = () => {
     setPage(page)
   }
 
+  const ROOT_API = process.env.REACT_APP_API_URL
+
   return (
     <>
       <Header />
@@ -181,7 +183,7 @@ const InfoPickup = () => {
                             </div>
                             <div className="text-primary" style={{ cursor: 'pointer' }} onClick={() => {
                               if (val?.picKtpPengambil) {
-                                setDataPreview(val?.picKtpPengambil)
+                                setDataPreview(`${ROOT_API}${val?.filePath}${val?.picKtpPengambil}`)
                                 togglePreview()
                               }
                             }}>
@@ -190,7 +192,7 @@ const InfoPickup = () => {
                             </div>
                             <div className="text-primary" style={{ cursor: 'pointer' }} onClick={() => {
                               if (val?.picKepemilikan) {
-                                setDataPreview(val?.picKepemilikan)
+                                setDataPreview(`${ROOT_API}${val?.filePath}${val?.picKepemilikan}`)
                                 togglePreview()
                               }
                             }}>

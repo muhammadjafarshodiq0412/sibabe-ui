@@ -3,7 +3,7 @@ import callAPI from './api'
 const ROOT_API = process.env.REACT_APP_API_URL
 
 export const setItemEvidance = async (data) => {
-  const url = `${ROOT_API}/barang-bukti/save`
+  const url = `${ROOT_API}/barang-bukti/save-multipart`
 
   return callAPI({
     url,
@@ -14,7 +14,7 @@ export const setItemEvidance = async (data) => {
 }
 
 export const updateItemEvidance = async (data, id) => {
-  const url = `${ROOT_API}/barang-bukti/update?id=${id}`
+  const url = `${ROOT_API}/barang-bukti/update-multipart?id=${id}`
 
   return callAPI({
     url,
