@@ -674,7 +674,7 @@ const ModalInputItem = ({ isOpen, toggle, created, payload, listCategory, getDat
                                 ) : null}
                             </FormGroup>
                         </Col>
-                        {user && (
+                        {(user && payload?.statusNoReg !== 'CLOSE') && (
                             <>
                                 <Col md={6}>
                                     <FormGroup>
@@ -747,7 +747,7 @@ const ModalInputItem = ({ isOpen, toggle, created, payload, listCategory, getDat
                         <Spinner size="lg" color="dark" />
                     ) : (
                         user ? (
-                            <Button color="primary" type="submit">Ambil / Klaim</Button>
+                            <Button color="primary" type="submit" disabled={payload?.statusNoReg === 'CLOSE'}>{payload?.statusNoReg === 'CLOSE' ? 'Sudah di Ambil / Klaim' : 'Ambil / Klaim'}</Button>
                         ) : (
                             <Button color="primary" type="submit" hidden={detail}>Simpan Data</Button>
                         )

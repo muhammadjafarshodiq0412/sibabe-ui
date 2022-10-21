@@ -152,19 +152,19 @@ const InfoPickup = () => {
                             </div>
                           </td>
                           <td>
-                            {val?.barangBukti?.statusNoReg === 'OPEN' && (
+                            {val?.statusClaim === 'NEW' && (
                               <Badge color="danger">
-                                Belum Isi Form
+                                Belum Dikonfirmasi
                               </Badge>
                             )}
-                            {val?.barangBukti?.statusNoReg === 'CLAIM' && (
+                            {val?.statusClaim === 'REJECT' && (
                               <Badge color="warning">
-                                Sudah Isi Form
+                                Ditolak
                               </Badge>
                             )}
-                            {val?.barangBukti?.statusNoReg === 'CLOSE' && (
+                            {val?.statusClaim === 'APPROVE' && (
                               <Badge color="success">
-                                Sudah Di Ambil
+                                Dikonfirmasi
                               </Badge>
                             )}
                           </td>
@@ -204,7 +204,7 @@ const InfoPickup = () => {
                             {val?.statusClaim === 'NEW' ? 'Pihak Kejaksaan Belum Konfirmasi' : val?.statusClaim === 'REJECT' ? 'Ditolak' : `Sudah Dikonfirmasi ${val?.admin?.name} pada Tanggal ${moment(val?.createdDate).format('DD-MMM-YYYY hh:mm:ss')}`}
                           </td>
                           <td>
-                            {val?.barangBukti?.statusNoReg !== 'CLOSE' && (
+                            {(val?.statusClaim !== 'APPROVE' && val?.statusClaim !== 'REJECT') && (
                               <Button type="button" size="sm" color="success" onClick={() => {
                                 setId(val.id)
                                 toggle()
