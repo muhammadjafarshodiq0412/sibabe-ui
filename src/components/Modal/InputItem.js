@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import Cookies from 'js-cookie';
 import React, { useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import Select from 'react-select';
 import { Button, Col, Form, FormGroup, Input, Label, Modal, ModalBody, ModalHeader, Row, Spinner } from 'reactstrap';
 import { updateItemEvidance } from 'services/itemEvidances';
@@ -56,6 +57,7 @@ const ModalInputItem = ({ isOpen, toggle, created, payload, listCategory, getDat
     });
 
     const ROOT_API = process.env.REACT_APP_API_URL
+    const history = useHistory();
 
     useEffect(() => {
         setFile([]);
@@ -71,7 +73,7 @@ const ModalInputItem = ({ isOpen, toggle, created, payload, listCategory, getDat
                 phoneNumber: payload?.user?.phoneNumber
             })
             delete response.user
-            if (payload.kategoriBb) {
+            if (payload.kategoriBb && !user) {
                 const valueCategory = listCategory.filter(val => val.value === payload.kategoriBb.id)[0]
                 setData({ ...response, kategoriBb: valueCategory })
             } else {
@@ -114,73 +116,85 @@ const ModalInputItem = ({ isOpen, toggle, created, payload, listCategory, getDat
         e.preventDefault()
 
         if (user) {
-            let errorValidasiClaim = false
+            const profileCookies = Cookies.get('_P01e')
+            if (profileCookies) {
+                let errorValidasiClaim = false
 
-            Object.keys(dataClaim).some(keys => {
-                if (dataClaim[keys] === '') {
-                    errorValidasiClaim = true
-                }
-                return dataClaim[keys] === '' || dataClaim[keys] === null
-            })
-
-            if (errorValidasiClaim) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Form harus diisi semua!!!',
-                    showConfirmButton: false,
-                    timer: 1500
+                Object.keys(dataClaim).some(keys => {
+                    if (dataClaim[keys] === '') {
+                        errorValidasiClaim = true
+                    }
+                    return dataClaim[keys] === '' || dataClaim[keys] === null
                 })
-            } else {
-                setLoading(true)
-                const formData = new FormData();
-                const payloadData = {
-                    admin: dataClaim.admin,
-                    claimer: dataClaim.claimer,
-                    barangBukti: dataClaim.barangBukti,
-                    namaPengambil: dataClaim.namaPengambil,
-                    nikPengambil: dataClaim.nikPengambil,
-                    pengambilanBb: dataClaim?.pengambilanBb?.value
-                }
 
-                formData.append('data', JSON.stringify(payloadData))
-
-                if (dataClaim.picKepemilikan) {
-                    formData.append('kepemilikan', dataClaim.picKepemilikan)
-                }
-
-                if (dataClaim.picKtpPengambil) {
-                    formData.append('ktp', dataClaim.picKtpPengambil)
-                }
-                
-                const response = await setSaveTransaction(formData)
-
-                if (response.error) {
-                    setLoading(false)
+                if (errorValidasiClaim) {
                     Swal.fire({
                         icon: 'error',
-                        title: response.message,
+                        title: 'Form harus diisi semua!!!',
                         showConfirmButton: false,
                         timer: 1500
                     })
                 } else {
-                    setLoading(false)
-                    toggle()
-                    getData()
-                    Swal.fire({
-                        icon: 'success',
-                        title: "Data Berhasil Diklaim",
-                        confirmButtonText: 'Konfirmasi Melalui Whatsapp',
-                        cancelButtonText: 'Tidak'
-                    }).then((value) => {
-                        if (value.isConfirmed) {
-                            const profileCookies = Cookies.get('_P01e')
-                            const profileDecode = profileCookies && JSON.parse(atob(profileCookies))
-                            window.open(
-                                `https://api.whatsapp.com/send?phone=62${nameUser?.phoneNumber ? nameUser?.phoneNumber[0] === '0' ? nameUser?.phoneNumber?.replace('0', '') : nameUser?.phoneNumber : ''}&text=Halo%20${nameUser?.name}%20.%20Saya,%20${profileDecode?.name},%20Dengan%20Nomor%20KTP:%20${dataClaim.nikPengambil}.%20Ingin%20Mengambil%20Barang%20Bukti%20Saya.%20Adapun%20Nomor%20Register%20Bukti%20(BA5):%20${payload?.noRegBukti},%20Dengan%20Barang%20Bukti:%20${payload?.barangBukti1}%20dengan%20nomor%20polisi%20${payload?.noPol1}%20.%20Mohon%20Untuk%20Segera%20Ditindak%20Lanjuti%20Permohonan%20Saya.`
-                            )
-                        }
-                    })
+                    setLoading(true)
+                    const formData = new FormData();
+                    const payloadData = {
+                        admin: dataClaim.admin,
+                        claimer: dataClaim.claimer,
+                        barangBukti: dataClaim.barangBukti,
+                        namaPengambil: dataClaim.namaPengambil,
+                        nikPengambil: dataClaim.nikPengambil,
+                        pengambilanBb: dataClaim?.pengambilanBb?.value
+                    }
+
+                    formData.append('data', JSON.stringify(payloadData))
+
+                    if (dataClaim.picKepemilikan) {
+                        formData.append('kepemilikan', dataClaim.picKepemilikan)
+                    }
+
+                    if (dataClaim.picKtpPengambil) {
+                        formData.append('ktp', dataClaim.picKtpPengambil)
+                    }
+
+                    const response = await setSaveTransaction(formData)
+
+                    if (response.error) {
+                        setLoading(false)
+                        Swal.fire({
+                            icon: 'error',
+                            title: response.message,
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                    } else {
+                        setLoading(false)
+                        toggle()
+                        getData()
+                        Swal.fire({
+                            icon: 'success',
+                            title: "Data Berhasil Diklaim",
+                            confirmButtonText: 'Konfirmasi Melalui Whatsapp',
+                            cancelButtonText: 'Tidak'
+                        }).then((value) => {
+                            if (value.isConfirmed) {
+                                const profileCookies = Cookies.get('_P01e')
+                                const profileDecode = profileCookies && JSON.parse(atob(profileCookies))
+                                window.open(
+                                    `https://api.whatsapp.com/send?phone=62${nameUser?.phoneNumber ? nameUser?.phoneNumber[0] === '0' ? nameUser?.phoneNumber?.replace('0', '') : nameUser?.phoneNumber : ''}&text=Halo%20${nameUser?.name}%20.%20Saya,%20${profileDecode?.name},%20Dengan%20Nomor%20KTP:%20${dataClaim.nikPengambil}.%20Ingin%20Mengambil%20Barang%20Bukti%20Saya.%20Adapun%20Nomor%20Register%20Bukti%20(BA5):%20${payload?.noRegBukti},%20Dengan%20Barang%20Bukti:%20${payload?.barangBukti1}%20dengan%20nomor%20polisi%20${payload?.noPol1}%20.%20Mohon%20Untuk%20Segera%20Ditindak%20Lanjuti%20Permohonan%20Saya.`
+                                )
+                            }
+                        })
+                    }
                 }
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Silahkan Login Terlebih Dahulu untuk Klaim',
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(() => {
+                    history.push('/auth/login')
+                })
             }
         } else {
             let errorValidasi = false
@@ -245,9 +259,9 @@ const ModalInputItem = ({ isOpen, toggle, created, payload, listCategory, getDat
                         user: profileDecode?.id
                     }
 
-                    
+
                     formData.append('barangBukti', JSON.stringify(json))
-                    
+
                     await Promise.all(file.map((value, index) => {
                         formData.append('files', value)
                         return true
@@ -311,19 +325,33 @@ const ModalInputItem = ({ isOpen, toggle, created, payload, listCategory, getDat
             <ModalBody className="pt-1">
                 <Form onSubmit={submit}>
                     <Row>
-                        <Col md={6}>
-                            <FormGroup>
-                                <Label>Jenis Barang Bukti</Label>
-                                <Select
-                                    name="jenis-barang-bukti"
-                                    placeholder="Pilih Jenis Barang Bukti"
-                                    options={listCategory}
-                                    value={data?.kategoriBb}
-                                    onChange={(e) => setData({ ...data, kategoriBb: e })}
-                                    isDisabled={detail}
-                                />
-                            </FormGroup>
-                        </Col>
+                        {user ? (
+                            <Col md={6}>
+                                <FormGroup>
+                                    <Label>Nomor Registrasi Perkara</Label>
+                                    <Input
+                                        type="text"
+                                        placeholder="Inputkan Nomor Registrasi Perkara"
+                                        value={payload?.kategoriBb?.value}
+                                        disabled={detail}
+                                    />
+                                </FormGroup>
+                            </Col>
+                        ) : (
+                            <Col md={6}>
+                                <FormGroup>
+                                    <Label>Jenis Barang Bukti</Label>
+                                    <Select
+                                        name="jenis-barang-bukti"
+                                        placeholder="Pilih Jenis Barang Bukti"
+                                        options={listCategory}
+                                        value={data?.kategoriBb}
+                                        onChange={(e) => setData({ ...data, kategoriBb: e })}
+                                        isDisabled={detail}
+                                    />
+                                </FormGroup>
+                            </Col>
+                        )}
                         <Col md={6}>
                             <FormGroup>
                                 <Label>Nomor Registrasi Perkara</Label>

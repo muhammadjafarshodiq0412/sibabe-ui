@@ -1,12 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import ModalInputItem from 'components/Modal/InputItem';
-import HomeNavbar from 'components/Navbars/HomeNavbar'
-import Cookies from 'js-cookie';
+import HomeNavbar from 'components/Navbars/HomeNavbar';
 import React, { useEffect, useState } from 'react'
 import Pagination from 'react-js-pagination';
-import { useHistory } from 'react-router-dom';
-import { Button, Card, CardFooter, Container, FormGroup, Input, Label, Table } from 'reactstrap'
-import { getCategory } from 'services/categories';
+import { Button, Card, CardFooter, Container, FormGroup, Input, Label, Table } from 'reactstrap';
 import { getItemEvidance } from 'services/itemEvidances';
 import Swal from 'sweetalert2';
 
@@ -24,9 +21,6 @@ const ItemEvidance = () => {
   const [detail, setDetail] = useState(false);
   const [dataModal, setDataModal] = useState('');
   const [created, setCreated] = useState(true);
-  const [optionCategory, setOptionCategory] = useState([]);
-
-  const history = useHistory();
 
   const toggle = () => setIsOpen(!isOpen);
 
@@ -65,24 +59,9 @@ const ItemEvidance = () => {
     setPage(page)
   }
 
-  const getDataCategory = async () => {
-    const response = await getCategory()
-    if (!response.error) {
-      if (response?.payload?.content?.length > 0) {
-        const dataCategory = response.payload.content.map(val => {
-          return {
-            label: val.value,
-            value: val.id
-          }
-        })
-        setOptionCategory(dataCategory)
-      }
-    }
-  }
-
   return (
     <div>
-      <ModalInputItem toggle={toggle} isOpen={isOpen} created={created} payload={dataModal} listCategory={optionCategory} getData={getItemEvidanceList} detail={detail} user={true} />
+      <ModalInputItem toggle={toggle} isOpen={isOpen} created={created} payload={dataModal} getData={getItemEvidanceList} detail={detail} user={true} />
       <HomeNavbar>
         <Container className="py-3">
           <FormGroup>
@@ -123,24 +102,11 @@ const ItemEvidance = () => {
                           {val.barangBukti1}
                         </td>
                         <td className="text-right">
-                          <Button size="sm" type='button' onClick={async () => {
-                            const profileCookies = Cookies.get('_P01e')
-                            if (profileCookies) {
-                              setDetail(true)
-                              await getDataCategory()
-                              setCreated(false);
-                              setDataModal(val);
-                              toggle();
-                            } else {
-                              Swal.fire({
-                                icon: 'error',
-                                title: 'Silahkan Login Terlebih Dahulu untuk Klaim',
-                                showConfirmButton: false,
-                                timer: 1500
-                              }).then(() => {
-                                history.push('/auth/login')
-                              })
-                            }
+                          <Button size="sm" type='button' onClick={() => {
+                            setDetail(true)
+                            setCreated(false);
+                            setDataModal(val);
+                            toggle();
                           }}>Ambil / Klaim</Button>
                         </td>
                       </tr>
