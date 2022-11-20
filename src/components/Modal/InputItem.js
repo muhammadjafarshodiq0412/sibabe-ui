@@ -197,51 +197,13 @@ const ModalInputItem = ({ isOpen, toggle, created, payload, listCategory, getDat
                 })
             }
         } else {
-            let errorValidasi = false
-
-            Object.keys(data).some(keys => {
-                if (keys.includes('pic') === false) {
-                    if (data[keys] === '') {
-                        errorValidasi = true
-                    }
-                }
-                return data[keys] === '' || data[keys] === null
-            })
-
-            if (errorValidasi) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Form harus diisi semua!!!',
-                    showConfirmButton: false,
-                    timer: 1500
-                })
-            } else {
+            if (data?.kategoriBb) {
                 setLoading(true);
                 const profileCookies = Cookies.get('_P01e')
                 const profileDecode = JSON.parse(atob(profileCookies))
                 let json
                 const formData = new FormData();
                 if (file.length > 0) {
-
-                    // let fileData = {
-                    //     pic1: "",
-                    //     pic2: "",
-                    //     pic3: "",
-                    //     pic4: "",
-                    //     pic5: "",
-                    //     pic6: "",
-                    //     pic7: "",
-                    //     pic8: "",
-                    //     pic9: "",
-                    //     pic10: "",
-                    // }
-
-                    // await Promise.all(Object.keys(data).map((keys) => {
-                    //     if (keys.includes('pic')) {
-                    //         fileData = { ...fileData, [keys]: data[keys] }
-                    //     }
-                    //     return true
-                    // }))
 
                     let payloadData = data
 
@@ -284,6 +246,7 @@ const ModalInputItem = ({ isOpen, toggle, created, payload, listCategory, getDat
                     }
 
                     formData.append('barangBukti', JSON.stringify(json))
+                    formData.append('files', null)
                 }
 
                 let response
@@ -314,6 +277,13 @@ const ModalInputItem = ({ isOpen, toggle, created, payload, listCategory, getDat
                         getData()
                     })
                 }
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Jenis Barang Bukti harus diisi!!!',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
             }
         }
 
