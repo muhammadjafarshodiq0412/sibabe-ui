@@ -246,7 +246,7 @@ const ModalInputItem = ({ isOpen, toggle, created, payload, listCategory, getDat
                     }
 
                     formData.append('barangBukti', JSON.stringify(json))
-                   // formData.append('files', null)
+
                 }
 
                 let response
