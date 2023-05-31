@@ -14,7 +14,8 @@ const ModalKejari = ({ isOpen, toggle, created, payload, getData }) => {
         username: "",
         password: "",
         role: "ADMIN",
-        isActive: true
+        isActive: true,
+        nik: "no need"
     })
     const [loading, setLoading] = useState(false);
 
@@ -22,7 +23,8 @@ const ModalKejari = ({ isOpen, toggle, created, payload, getData }) => {
         if (!created && payload) {
             const response = {
                 ...payload,
-                password: ''
+                password: '',
+                nik:'no need'
             }
 
             setData(response)
@@ -45,6 +47,7 @@ const ModalKejari = ({ isOpen, toggle, created, payload, getData }) => {
 
         Object.keys(data).some(keys => {
             if (data[keys] === '') {
+                console.log(data.valueOf())
                 errorValidasi = true
             }
             return data[keys] === '' || data[keys] === null
