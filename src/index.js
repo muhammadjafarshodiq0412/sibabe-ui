@@ -1,5 +1,5 @@
 import React from "react";
-import ReactDOM from "react-dom/client";
+import ReactDOM from "react-dom";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 
 import "assets/plugins/nucleo/css/nucleo.css";
@@ -12,9 +12,8 @@ import Landing from "layouts/Landing";
 import ItemEvidance from "layouts/ItemEvidance";
 import PrivateRoute from "helpers/privateRoute";
 
-const root = ReactDOM.createRoot(document.getElementById("root"));
 
-root.render(
+ReactDOM.render(
   <BrowserRouter>
     <Switch>
       <Route exact path="/" render={(props) => <Landing {...props} />} />
@@ -27,4 +26,4 @@ root.render(
       <Route path="/auth" render={(props) => <AuthLayout {...props} />} />
     </Switch>
   </BrowserRouter>
-);
+, document.getElementById("root"));
